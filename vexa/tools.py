@@ -1,4 +1,9 @@
-def log(*args,file_path=None):
+import datetime
+import os
+import csv
+import sys
+
+def log(*args,file_path=None,suf=''):
     """
     Logs the provided arguments into a CSV file along with a current timestamp.
 
@@ -8,14 +13,14 @@ def log(*args,file_path=None):
     """
 
     # Get the current timestamp
-    now = datetime.now()
+    now = datetime.datetime.utcnow()
     timestamp = now.strftime('%Y-%m-%d %H:%M:%S')
 
     if file_path is None:
         script_name = os.path.basename(sys.argv[0])
         if script_name.endswith('.py'):
             script_name = script_name[:-3]  # Remove .py extension
-        file_path = f"/logs/{script_name}_log.csv"
+        file_path = f"/logs/{script_name}_{suf}_log.csv"
 
     # Open the CSV file and append the new row
     with open(file_path, mode='a', newline='') as file:
