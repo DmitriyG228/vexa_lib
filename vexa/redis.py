@@ -1,6 +1,7 @@
 import redis.asyncio as aioredis
 import os
 import pandas as pd
+import json
 
 
 
@@ -53,3 +54,25 @@ async def get_connections_df(name, redis_client, min_length=1, pattern='*'):
         'length': queue_lengths
     }
     return pd.DataFrame(data)
+
+
+async def pop_items(redis_client,queue, num_items=1):
+        
+        
+        """
+        Retrieves a specified number of audio chunks from this connection's queue
+        in a FIFO manner using RPOP.
+        """
+        chunks = []
+        
+        print(queue)
+
+        for _ in range(num_items):
+            chunk = await redis_client.rpop(queue)
+            if chunk:
+                chunks.append(json.loads(chunk))
+            else:
+                break
+            
+
+        return chunks
